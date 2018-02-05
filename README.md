@@ -23,7 +23,7 @@ It uses:
 
 Pictures and example movie (bellow) are in directory Pics/<br><br>
 Clik to download the movie<br>
-Or watch it on youtube: https://youtu.be/h-aXhq9icGg<br>
+Or watch it on youtube: https://youtu.be/h-aXhq9icGg<br><br>
 <a href="https://github.com/marekurbanski/ArduinoNano-mini-asteroid/raw/master/Pics/movie.mp4">
 <img src="https://github.com/marekurbanski/ArduinoNano-mini-asteroid/raw/master/Pics/movie.jpg">
 </a>
