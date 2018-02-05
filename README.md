@@ -1,11 +1,12 @@
-Arduino NANO
+<b>Game - mini Asteroid</b>
+Project for Arduino NANO
 
 Author: Marek Urbanski
 e-mail: marek@www2.pl
 
 https://github.com/marekurbanski/ArduinoNano-mini-asteroid.git
  
-Game - mini Asteroid
+
 This game has a lot of limitations because Arduino NANO has only: 
 - 16kb RAM
 - 16 MHz speed
@@ -21,6 +22,8 @@ It uses:
 
 
 Pictures and example movie (bellow) are in directory Pics/<br><br>
+Clik to download the movie<br>
+Or watch it on youtube: https://youtu.be/h-aXhq9icGg<br>
 <a href="https://github.com/marekurbanski/ArduinoNano-mini-asteroid/raw/master/Pics/movie.mp4">
 <img src="https://github.com/marekurbanski/ArduinoNano-mini-asteroid/raw/master/Pics/movie.jpg">
 </a>

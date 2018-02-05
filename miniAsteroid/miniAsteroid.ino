@@ -90,7 +90,7 @@ void setup(void) {
   tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
   tft.println("Game rules:");
   tft.println("");
-  tft.println("- Upper button: reset the game");
+  tft.println("- Upper button: reset");
   tft.println("- JoyStick: move ship");
   tft.println("- Lower button: fire");
   tft.println("");
