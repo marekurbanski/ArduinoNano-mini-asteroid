@@ -88,17 +88,18 @@ void setup(void) {
   tft.setCursor(0, 10);
   tft.setTextSize(1);
   tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
-  tft.println("Zasady gry:");
+  tft.println("Game rules:");
   tft.println("");
-  tft.println("- Gorny przycisk resetuje");
-  tft.println("- Ruszasz JoyStickiem");
-  tft.println("- Dolny przycisk srzela");
+  tft.println("- Upper button: reset the game");
+  tft.println("- JoyStick: move ship");
+  tft.println("- Lower button: fire");
   tft.println("");
-  tft.println("Jestes kolem");
-  tft.println("Niszczysz kwadraty");
+  tft.println("You are the ship");
+  tft.println("Destroy enemies");
+  tft.println("(hold fire to skip this)");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(4000);
-  tft.println("uwaga...");
+  tft.println("wait...");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(1000);
   tft.setTextSize(2);
@@ -111,7 +112,7 @@ void setup(void) {
   tft.print("1,");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(1000);
-  tft.print("start");
+  tft.print("go !");
   tft.fillScreen(ST7735_BLACK);
   
 
@@ -145,20 +146,19 @@ void setup_description(String text)
  * Draw first previous object with black lines - remove previous image
  * and after that draw new picture
  */
-void draw_object(byte type, byte x, byte y, byte prev_x, byte prev_y, byte size_object)
+void draw_object(byte type, byte x, byte y, byte prev_x, byte prev_y, byte size_object, byte size_prev_object)
   {
+    size_prev_object = size_prev_object + 5;
+    
     if(type == 1)  // bullet
       {
       tft.drawCircle(prev_x, prev_y, 1, ST7735_BLACK);
-      tft.drawCircle(x, y, 1, ST7735_BLUE);  
+      tft.drawCircle(x, y, 1, ST7735_GREEN);  
       }
 
     if(type == 2) // bot
       {
-      tft.fillRect(prev_x-(size_object/2), prev_y-(size_object/2), size_object, size_object, ST7735_BLACK);
-      tft.fillRect(x-(size_object/2), y-(size_object/2), size_object, size_object, ST7735_RED);  
-      tft.drawRect(x-(size_object/2), y-(size_object/2), size_object, size_object, ST7735_WHITE);  
-
+      tft.fillRect(prev_x-(size_prev_object/2), prev_y-(size_prev_object/2), size_prev_object, size_prev_object, ST7735_BLACK);
       tft.fillRect(x-(size_object/2), y-(size_object/2), size_object, size_object, ST7735_RED);  
       tft.drawRect(x-(size_object/2), y-(size_object/2), size_object, size_object, ST7735_WHITE);  
       
@@ -166,8 +166,12 @@ void draw_object(byte type, byte x, byte y, byte prev_x, byte prev_y, byte size_
 
     if(type == 3) // my
       {
-      tft.drawCircle(prev_x, prev_y, 3, ST7735_BLACK);
-      tft.drawCircle(x, y, 3, ST7735_GREEN);  
+        
+      tft.fillCircle(prev_x, prev_y, 6, ST7735_BLACK);
+      tft.drawLine(x-5,y,x+5,y, ST7735_WHITE);
+      tft.drawLine(x,y-5,x,y+5, ST7735_WHITE);
+      tft.fillCircle(x, y, 3, ST7735_BLUE);  
+      tft.drawCircle(x, y, 3, ST7735_WHITE);
       }
 
   }
@@ -177,19 +181,24 @@ void draw_object(byte type, byte x, byte y, byte prev_x, byte prev_y, byte size_
  */
 void undraw_object(byte type, byte x, byte y, byte size_object)
   {
+    size_object = size_object + 5;
     if(type == 1)  // bullet
       {
-      tft.drawCircle(x, y, 1, ST7735_BLACK);  
+      tft.fillCircle(x, y, 3, ST7735_BLACK);  
       }
 
     if(type == 2) // bot
       {
-      tft.fillRect(x-(size_object / 2), y-(size_object / 2), size_object, size_object, ST7735_BLACK);  
+      for(byte i=0; i<size_object/2+15; i=i+3)
+        tft.fillCircle(x, y, i, ST7735_WHITE);  
+
+      for(byte i=0; i<size_object/2+18; i=i+3)
+        tft.fillCircle(x, y, i, ST7735_BLACK);  
       }
 
     if(type == 3) // my
       {
-      tft.drawCircle(x, y, 3, ST7735_BLACK);  
+      tft.fillCircle(x, y, 6, ST7735_BLACK);  
       }
 
   }
@@ -224,8 +233,8 @@ void loop() {
       // koniec gry - wygrana
       tft.fillScreen(ST7735_BLACK);
       tft.setTextSize(2);
-      setup_description("WYGRALES !!!: "+String(max_botow)+"."+String(active_time));
-      tft.println("WYGRALES :) "+String(max_botow)+"."+String(active_time)+" !!!!");
+      setup_description("YOU WIN !!!: "+String(max_botow)+"."+String(active_time));
+      tft.println("YOU WIN !!! :) "+String(max_botow)+"."+String(active_time)+" !!!!");
       delay(3000000);
        }
   }
@@ -242,22 +251,17 @@ void loop() {
   }
 
 
-  //if(digitalRead(6) == HIGH) Serial.println(" 6- fire");
+
   if(digitalRead(5) == HIGH) 
     {  
-    pinMode(5, OUTPUT);
-    digitalWrite(5, LOW);
-    pinMode(5, INPUT);  
     if(shot_can_be_fired == true)
       {
         shot_can_be_fired = false;
         for(nr = 1; nr<max_bullet; nr++)
           {
-          Serial.println("Sprawdzam bullet "+String(nr));  
           if(bullet[nr].active == false)
             { 
             bullet[nr].Fire(x,y,last_joy_x,last_joy_y);
-            Serial.println(" 5 - FIRE bullet "+String(nr));
             break;
             }
           }    
@@ -275,25 +279,41 @@ void loop() {
     bullet[nr].Action(0,0);
     if(bullet[nr].active == true)
       {
-      draw_object(1, bullet[nr].x, bullet[nr].y, bullet[nr].prev_x, bullet[nr].prev_y, 6);
+      draw_object(1, bullet[nr].x, bullet[nr].y, bullet[nr].prev_x, bullet[nr].prev_y, 6, 6);
       for(nr2=0; nr2<max_botow; nr2++)
         {
-          // sprawdzanie czy pocisk nie uderzyl w bota
-          if(
-            ((bot[nr2].x + 3) > (bullet[nr].x - bot[nr2].my_size/2))
-            && ((bot[nr2].x - 3) < (bullet[nr].x + bot[nr2].my_size/2))
-            && ((bot[nr2].y + 3) > (bullet[nr].y - bot[nr2].my_size/2))
-            && ((bot[nr2].y - 3) < (bullet[nr].y + bot[nr2].my_size/2))
-            )
-          {
-          bullet[nr].active = false;
-          bot[nr2].killed = true;
-          undraw_object(1, bullet[nr].x, bullet[nr].y, 6);
-          undraw_object(2, bot[nr2].x, bot[nr2].y, bot[nr].my_size);
-          }
+          // checking if bot is killed
+          if(bot[nr2].killed == false)
+            {
+            // checking if bullet hit the bot
+            if(
+              ((bot[nr2].x + 3) > (bullet[nr].x - bot[nr2].my_size/2))
+              && ((bot[nr2].x - 3) < (bullet[nr].x + bot[nr2].my_size/2))
+              && ((bot[nr2].y + 3) > (bullet[nr].y - bot[nr2].my_size/2))
+              && ((bot[nr2].y - 3) < (bullet[nr].y + bot[nr2].my_size/2))
+              )
+                {
+                bullet[nr].active = false;
+                bot[nr2].killed = true;               
+                bullet[nr].visible = false;
+                undraw_object(1, bullet[nr].x, bullet[nr].y, 6);
+                undraw_object(1, bullet[nr].prev_x, bullet[nr].prev_y, 6);
+                undraw_object(2, bot[nr2].x, bot[nr2].y, bot[nr].my_prev_size);
+                }
+            }
         }
       }
+      else
+      {
+        if(bullet[nr].visible == true)
+          {
+          bullet[nr].visible = false;  
+          undraw_object(1, bullet[nr].x, bullet[nr].y, 6);
+          undraw_object(1, bullet[nr].prev_x, bullet[nr].prev_y, 6);        
+          }
+      }
     }
+    
   
   //if(digitalRead(4) == HIGH) Serial.println(" 4- strzal");
 
@@ -323,7 +343,7 @@ void loop() {
   if(y<1) y = 130;
   x = x + px;
   y = y - py;
-  draw_object(3, x, y, prev_x, prev_y, 6);
+  draw_object(3, x, y, prev_x, prev_y, 6, 6);
 
   /*
    * Save previous position
@@ -344,13 +364,13 @@ for(nr=0; nr<max_botow; nr++)
     bot[nr].speed = speed;
     bot[nr].Action(x,y);
     
-    draw_object(2, bot[nr].x, bot[nr].y, bot[nr].prev_x, bot[nr].prev_y, bot[nr].my_size);
+    draw_object(2, bot[nr].x, bot[nr].y, bot[nr].prev_x, bot[nr].prev_y, bot[nr].my_size, bot[nr].my_prev_size);
     
     if(bot[nr].collision == true)
     {
       // koniec gry - przegrana
       tft.fillScreen(ST7735_BLACK);
-      setup_description("KONIEC: "+String(max_botow)+"."+String(active_time));
+      setup_description("GAME OVER. YOU LOST: "+String(max_botow)+"."+String(active_time));
       x = 50;
       y = 50;
       speed = 1;

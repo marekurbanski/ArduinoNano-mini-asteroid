@@ -23,6 +23,7 @@ class Bullet
 	  byte prev_x;
 	  byte prev_y;
     boolean active;
+    boolean visible;
   private:
 	  byte dirrection_x;
 	  byte dirrection_y;

@@ -25,6 +25,10 @@ class Opponent
     boolean killed;
     byte speed;
     byte my_size;
+    byte my_prev_size;
+    byte min_size;
+    byte max_size;
+    boolean size_up;
   private:
 	  byte px;
 	  byte py;

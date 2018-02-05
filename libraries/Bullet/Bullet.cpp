@@ -18,6 +18,7 @@ Bullet::Bullet()
  dirrection_x = 0;
  dirrection_y = 0;
  active = false;
+ visible = true;
 }
 
 void Bullet::Fire(byte u_x, byte u_y, byte kier_x, byte kier_y)
@@ -29,6 +30,7 @@ void Bullet::Fire(byte u_x, byte u_y, byte kier_x, byte kier_y)
     dirrection_x = - kier_x;
     dirrection_y = - kier_y;
     active = true;
+    visible = true;
     }
 
 }

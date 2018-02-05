@@ -14,16 +14,22 @@
 
 Opponent::Opponent()
 {
-// default start position
-// variables defined
- x = 10;
- y = 10 ;
+ // default start position
+ // variables defined
+ randomSeed(analogRead(2));
+ x = random(10,150);
+ y = random(10,130);
+
  collision = false;
  killed = false;
  speed = 2;
+ min_size = 5;
+ max_size = 20;
  dirrection_x = random(0,speed);
  dirrection_y = random(0,speed);
- my_size = random(6,15);
+ my_size = random(min_size,max_size);
+ my_prev_size = my_size;
+ size_up = true;
 }
 
 void Opponent::Action(byte u_x, byte u_y)
@@ -40,6 +46,29 @@ void Opponent::Action(byte u_x, byte u_y)
   	}
 	prev_x = x;
 	prev_y = y;
+
+  /*
+   * Change size of the Opponent
+   *
+   */
+  my_prev_size = my_size;
+  //if(random(1,10) >5)
+  if(size_up == true)
+    my_size = my_size + 1;
+  else
+    my_size = my_size - 1;
+
+  if(my_size > max_size)
+      {
+      size_up = false;
+      my_size = max_size;
+      }
+
+  if(my_size < min_size)
+      {
+      size_up = true;
+      my_size = min_size;
+      }
 
   // move opponent
   if(random(0,20)<3)
