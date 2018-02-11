@@ -20,7 +20,6 @@
  *  - 2 x Microstick
  *  - Universal board - PI22 240 WIERCONA 3x7
  */
-
 #include <Opponent.h>
 #include <Bullet.h>
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -62,6 +61,7 @@ boolean shot_can_be_fired = true;
 byte speed = 1;
 String prev_text;
 
+ 
 Opponent bot[50];
 Bullet bullet[10];
 
@@ -74,6 +74,30 @@ int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
+
+void game_init()
+  {
+  px = 0;
+  py = 0;
+  x = 50;
+  y = 50;
+  prev_x = 50;
+  prev_y = 50;
+  max_bullet = 10;
+  nr = 1;
+  nr2 = 1;
+  active_time = 0;
+  max_botow = 4;
+  last_joy_x = 2;
+  last_joy_y = 0;
+  shot_can_be_fired = true;
+  speed = 1;
+
+  for(int i=0; i<50; i++)
+    {
+    bot[i].Initialize();  
+    }
+  }
 
 /*
  * Main fusetup
@@ -88,18 +112,21 @@ void setup(void) {
   tft.setCursor(0, 10);
   tft.setTextSize(1);
   tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
-  tft.println("Game rules:");
+  tft.println("Gra zrobiona dla:");
   tft.println("");
-  tft.println("- Upper button: reset");
-  tft.println("- JoyStick: move ship");
-  tft.println("- Lower button: fire");
+  tft.setTextSize(2);
+  tft.println("Piotrka");
+  tft.println("Urbanskiego");
+  tft.setTextSize(1);
   tft.println("");
-  tft.println("You are the ship");
-  tft.println("Destroy enemies");
-  tft.println("(hold fire to skip this)");
+  tft.println("na 8 urodziny");
+  tft.println("od wujka Marka");
+  tft.println("i cioci Kalinki");
+  tft.println("");
+  tft.println("");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(4000);
-  tft.println("wait...");
+  tft.println("uwaga, start za...");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(1000);
   tft.setTextSize(2);
@@ -112,9 +139,10 @@ void setup(void) {
   tft.print("1,");
   if(digitalRead(5) != HIGH) // skip waiting when pressed key
     delay(1000);
-  tft.print("go !");
+  tft.print("juz !");
   tft.fillScreen(ST7735_BLACK);
   
+ 
 
 // setup pins
   pinMode(7, INPUT); 
@@ -233,8 +261,8 @@ void loop() {
       // koniec gry - wygrana
       tft.fillScreen(ST7735_BLACK);
       tft.setTextSize(2);
-      setup_description("YOU WIN !!!: "+String(max_botow)+"."+String(active_time));
-      tft.println("YOU WIN !!! :) "+String(max_botow)+"."+String(active_time)+" !!!!");
+      setup_description("Wygrales !!!: "+String(max_botow)+"."+String(active_time));
+      tft.println("Wygrales !!! :) "+String(max_botow)+"."+String(active_time)+" !!!!");
       delay(3000000);
        }
   }
@@ -370,13 +398,23 @@ for(nr=0; nr<max_botow; nr++)
     {
       // koniec gry - przegrana
       tft.fillScreen(ST7735_BLACK);
-      setup_description("GAME OVER. YOU LOST: "+String(max_botow)+"."+String(active_time));
+      tft.setCursor(0, 10);
+      tft.setTextSize(1);
+      tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
+      tft.println("Koniec gry");
+      tft.println("Twoj wynik to: ");
+      tft.println("");
+      tft.println("");
+      tft.setTextSize(5);
+      tft.println(String(max_botow)+"."+String(active_time));
+      
       x = 50;
       y = 50;
       speed = 1;
       active_time = 0;
       bot[nr].collision = false;
       delay(3000);
+      game_init();
       tft.fillScreen(ST7735_BLACK);
       max_botow = 4;
       for(nr2=0; nr2<max_botow; nr2++)

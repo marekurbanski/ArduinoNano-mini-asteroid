@@ -16,6 +16,7 @@ class Opponent
 {
   public:
     Opponent();
+    void Initialize();
     void Action(byte u_x, byte u_y);
     byte x;
     byte y;

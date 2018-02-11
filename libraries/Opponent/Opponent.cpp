@@ -14,23 +14,29 @@
 
 Opponent::Opponent()
 {
- // default start position
- // variables defined
- randomSeed(analogRead(2));
- x = random(10,150);
- y = random(10,130);
-
- collision = false;
- killed = false;
- speed = 2;
- min_size = 5;
- max_size = 20;
- dirrection_x = random(0,speed);
- dirrection_y = random(0,speed);
- my_size = random(min_size,max_size);
- my_prev_size = my_size;
- size_up = true;
+  this->Initialize();
 }
+
+void Opponent::Initialize()
+{
+  // default start position
+  // variables defined
+  randomSeed(analogRead(2));
+  x = random(10,150);
+  y = random(10,130);
+
+  collision = false;
+  killed = false;
+  speed = 2;
+  min_size = 5;
+  max_size = 20;
+  dirrection_x = random(0,speed);
+  dirrection_y = random(0,speed);
+  my_size = random(min_size,max_size);
+  my_prev_size = my_size;
+  size_up = true;
+}
+
 
 void Opponent::Action(byte u_x, byte u_y)
 {
