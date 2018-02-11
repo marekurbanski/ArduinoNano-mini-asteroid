@@ -8,7 +8,7 @@ https://github.com/marekurbanski/ArduinoNano-mini-asteroid.git
  
 
 This game has a lot of limitations because Arduino NANO has only: 
-- 16kb RAM
+- 2kb RAM
 - 16 MHz speed
  
 It uses:
